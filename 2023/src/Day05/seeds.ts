@@ -86,33 +86,188 @@ function applyMap(origSeed: number, seedMap: SeedMap): number {
 async function v2(file: string): Promise<number> {
   const [seedsLine, ...lines] = await readLines(file)
 
-  const seedRanges = parseSeedRangesLine(seedsLine)
-  console.log(`seedRanges = ${JSON.stringify(seedRanges, null, 2)}`)
+  let seedRanges = sortSeedRanges(parseSeedRangesLine(seedsLine))
+  logSeedRanges(seedRanges)
 
-  const numSeeds = seedRanges.map((r) => r.length).reduce((a, b) => a + b, 0)
+  const numSeeds = countSeeds(seedRanges)
   console.log(`Number of seeds: ${numSeeds}`)
-  const onePercent = Math.floor(numSeeds / 100)
 
   const maps = parseSeedMaps(lines)
   // console.log(`maps = ${JSON.stringify(maps, null, 2)}`)
 
-  let minLocation = Number.MAX_SAFE_INTEGER
-  let seedsChecked = 0
-  for (const { start, length } of seedRanges) {
-    for (let seed = start; seed < start + length; seed++) {
-      const location = applyMaps(seed, maps)
-      if (location < minLocation) {
-        minLocation = location
-      }
+  for (const seedMap of maps) {
+    seedRanges = sortSeedRanges(applyMapToRanges(seedRanges, seedMap))
 
-      seedsChecked++
-      if (onePercent > 10 && seedsChecked % onePercent === 0) {
-        console.log(seedsChecked / onePercent, '%')
-      }
+    console.log(`After ${seedMap.name}:`)
+    logSeedRanges(seedRanges)
+
+    const newNumSeeds = countSeeds(seedRanges)
+    if (newNumSeeds !== numSeeds) {
+      throw new Error(
+        `Seed count changed in ${seedMap.name}; ${numSeeds} -> ${newNumSeeds}`
+      )
     }
   }
 
-  return minLocation
+  return seedRanges[0].start
+}
+
+function logSeedRanges(seedRanges: SeedRange[]) {
+  console.log(
+    `seedRanges = ${JSON.stringify(
+      seedRanges.map((r) => `${r.start} - ${r.start + r.length - 1}`),
+      null,
+      2
+    )}`
+  )
+}
+
+function applyMapToRanges(
+  seedRanges: SeedRange[],
+  seedMap: SeedMap
+): SeedRange[] {
+  const ranges = [...seedRanges]
+  const newRanges: SeedRange[] = []
+
+  let range: SeedRange | undefined
+  let prevRange: SeedRange | undefined
+  while ((range = ranges.pop())) {
+    console.log(
+      `applyMapToRanges: ${seedMap.name} evaluating ${JSON.stringify(range)}`
+    )
+    if (range.start === prevRange?.start && range.length === prevRange.length) {
+      throw new Error(`${seedMap.name} stuck on ${JSON.stringify(range)}`)
+    }
+    prevRange = range
+    const rangeFragments = splitRange(range, seedMap)
+
+    if (rangeFragments.length === 1) {
+      // No split at all; this one is done
+      console.log(`  newRanges.push(${JSON.stringify(rangeFragments[0])})`)
+      newRanges.push(rangeFragments[0])
+    } else {
+      // This one got split up; evaluate each fragment in the next pass
+      console.log(`  ranges.push(...${JSON.stringify(rangeFragments)})`)
+      ranges.push(...rangeFragments)
+    }
+  }
+
+  return newRanges
+}
+
+function splitRange(range: SeedRange, seedMap: SeedMap): SeedRange[] {
+  for (const entry of seedMap.entries) {
+    if (range.length <= 0) {
+      return []
+    }
+
+    if (contains(entry, range)) {
+      console.log(
+        `  ${JSON.stringify(entry)} contains ${JSON.stringify(range)}`
+      )
+      return [
+        {
+          start: range.start + entry.delta,
+          length: range.length,
+        },
+      ]
+    }
+
+    if (splits(entry, range)) {
+      console.log(`  ${JSON.stringify(entry)} splits ${JSON.stringify(range)}`)
+      return [
+        {
+          start: range.start,
+          length: entry.sourceStart - range.start,
+        },
+        {
+          start: entry.sourceStart,
+          length: entry.rangeLength,
+        },
+        {
+          start: entry.sourceStart + entry.rangeLength,
+          length:
+            range.start +
+            range.length -
+            (entry.sourceStart + entry.rangeLength),
+        },
+      ]
+    }
+
+    if (containsEnd(entry, range)) {
+      console.log(
+        `  ${JSON.stringify(entry)} contains end of ${JSON.stringify(range)}`
+      )
+      return [
+        {
+          start: range.start,
+          length: entry.sourceStart - range.start,
+        },
+        {
+          start: entry.sourceStart,
+          length: range.start + range.length - entry.sourceStart,
+        },
+      ]
+    }
+
+    if (containsStart(entry, range)) {
+      console.log(
+        `  ${JSON.stringify(entry)} contains start of ${JSON.stringify(range)}`
+      )
+      return [
+        {
+          start: range.start,
+          length: entry.sourceStart + entry.rangeLength - range.start,
+        },
+        {
+          start: entry.sourceStart + entry.rangeLength,
+          length:
+            range.start +
+            range.length -
+            (entry.sourceStart + entry.rangeLength),
+        },
+      ]
+    }
+  }
+
+  return [range]
+}
+
+function contains(entry: SeedMapEntry, range: SeedRange): boolean {
+  return (
+    entry.sourceStart <= range.start &&
+    range.start + range.length <= entry.sourceStart + entry.rangeLength
+  )
+}
+
+function containsStart(entry: SeedMapEntry, range: SeedRange): boolean {
+  return (
+    entry.sourceStart <= range.start &&
+    range.start < entry.sourceStart + entry.rangeLength
+  )
+}
+
+function containsEnd(entry: SeedMapEntry, range: SeedRange): boolean {
+  return (
+    entry.sourceStart < range.start + range.length &&
+    range.start + range.length < entry.sourceStart + entry.rangeLength
+  )
+}
+
+function splits(entry: SeedMapEntry, range: SeedRange): boolean {
+  return (
+    // ( range  [entry]  )
+    range.start < entry.sourceStart &&
+    entry.sourceStart + entry.rangeLength <= range.start + range.length
+  )
+}
+
+function sortSeedRanges(seedRanges: SeedRange[]): SeedRange[] {
+  return [...seedRanges].sort((a, b) => a.start - b.start)
+}
+
+function countSeeds(seedRanges: SeedRange[]) {
+  return seedRanges.map((r) => r.length).reduce((a, b) => a + b, 0)
 }
 
 function parseSeedRangesLine(line: string): SeedRange[] {
