@@ -1,0 +1,27 @@
+{
+  "name": "2023",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "prettier -c . && eslint .",
+    "format": "prettier -w . && eslint --fix .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/line-reader": "^0.0.37",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "line-reader": "^0.4.0"
+  }
+}
