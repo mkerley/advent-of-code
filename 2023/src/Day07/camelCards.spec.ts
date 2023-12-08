@@ -80,7 +80,7 @@ describe('v1: J = Jack', () => {
   })
 
   test('v1 should return 6440 for sample input', async () => {
-    expect(await v1('sampleinput.txt')).to.equal(6440)
+    expect(await v1(`${__dirname}/sampleinput.txt`)).to.equal(6440)
   })
 })
 
@@ -130,6 +130,6 @@ describe('v2: J = Joker', () => {
   })
 
   test('v2 should return 5905 for sample input', async () => {
-    expect(await v2('sampleinput.txt')).to.equal(5905)
+    expect(await v2(`${__dirname}/sampleinput.txt`)).to.equal(5905)
   })
 })
