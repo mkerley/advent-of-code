@@ -6,12 +6,13 @@
   "scripts": {
     "lint": "prettier -c . && eslint .",
     "format": "prettier -w . && eslint --fix .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/line-reader": "^0.0.37",
+    "@types/lodash": "^4.14.202",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "eslint": "^8.55.0",
@@ -22,6 +23,7 @@
     "vitest": "^0.34.6"
   },
   "dependencies": {
-    "line-reader": "^0.4.0"
+    "line-reader": "^0.4.0",
+    "lodash": "^4.17.21"
   }
 }
