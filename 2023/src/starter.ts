@@ -1,8 +1,14 @@
-import { eachLine } from '../utils'
+import { readLines } from '../utils'
 
-async function v1(file: string) {}
+async function v1(file: string) {
+  const input = await readLines(file)
+  return 0
+}
 
-async function v2(file: string) {}
+async function v2(file: string) {
+  const input = await readLines(file)
+  return 0
+}
 
 async function main() {
   const file =
