@@ -151,7 +151,7 @@ async function part2_gearRatios(file: string) {
 }
 
 function findAdjacentGears(
-  partNumber: number,
+  _partNumber: number,
   row: number,
   start: number,
   end: number,

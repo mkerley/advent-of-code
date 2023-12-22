@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { eachLine, readLines } from '../utils'
+import { readLines } from '../utils'
 
 export enum HandType {
   HIGH_CARD,

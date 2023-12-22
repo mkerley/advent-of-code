@@ -2,11 +2,13 @@ import { readLines } from '../utils'
 
 async function v1(file: string) {
   const input = await readLines(file)
+  console.log(input)
   return 0
 }
 
 async function v2(file: string) {
   const input = await readLines(file)
+  console.log(input)
   return 0
 }
 

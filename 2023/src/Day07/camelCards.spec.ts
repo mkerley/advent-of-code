@@ -8,7 +8,6 @@ import {
   v1,
   v2,
 } from './camelCards'
-import _ from 'lodash'
 
 // Five of a kind, where all five cards have the same label: AAAAA
 // Four of a kind, where four cards have the same label and one card has a different label: AA8AA
