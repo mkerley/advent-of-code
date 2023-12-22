@@ -87,37 +87,6 @@ function findLastDigit(str: string): number {
   return strIndices.indexOf(lowestStrIndex)
 }
 
-function digitize(str: string): string {
-  // Replace numeric words from left to right
-  for (let i = 0; i < str.length; i++) {
-    str = replace(str, 'one', '1', i)
-    str = replace(str, 'two', '2', i)
-    str = replace(str, 'three', '3', i)
-    str = replace(str, 'four', '4', i)
-    str = replace(str, 'five', '5', i)
-    str = replace(str, 'six', '6', i)
-    str = replace(str, 'seven', '7', i)
-    str = replace(str, 'eight', '8', i)
-    str = replace(str, 'nine', '9', i)
-  }
-
-  return str
-}
-
-function replace(
-  str: string,
-  word: string,
-  num: string,
-  atIndex: number
-): string {
-  if (str.substring(atIndex, atIndex + word.length) === word)
-    return (
-      str.substring(0, atIndex) + num + str.substring(atIndex + word.length)
-    )
-
-  return str
-}
-
 async function main() {
   const file =
     process.argv.filter((arg) => !arg.includes('ts-node'))[1] ?? 'input.txt'

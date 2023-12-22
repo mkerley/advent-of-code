@@ -1,4 +1,4 @@
-import { eachLine, readLines } from '../utils'
+import { eachLine } from '../utils'
 
 type Game = { id: number; sets: GameSet[] }
 type GameSet = Record<string, number>
