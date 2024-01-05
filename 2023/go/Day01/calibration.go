@@ -82,6 +82,8 @@ func MinIndex(a int, b int) int {
 	return min(a, b)
 }
 
+// Finds the first numeric or textual digit in a string.
+// For example, FindFirstDigit("three1") would return 3.
 func FindFirstDigit(s string) int {
 	strIndices := []int{
 		MinIndex(strings.Index(s, "0"), strings.Index(s, "zero")),
