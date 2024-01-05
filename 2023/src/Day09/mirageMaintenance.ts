@@ -22,7 +22,7 @@ function findNext(nums: number[]): number {
 
   const offsets = nums
     .slice(0, nums.length - 1)
-    .map((n, i) => nums[i + 1] - nums[i])
+    .map((_, i) => nums[i + 1] - nums[i])
   const nextOffset = findNext(offsets)
   const next = nums[nums.length - 1] + nextOffset
 
@@ -51,7 +51,7 @@ function findPrev(nums: number[]): number {
 
   const offsets = nums
     .slice(0, nums.length - 1)
-    .map((n, i) => nums[i + 1] - nums[i])
+    .map((_, i) => nums[i + 1] - nums[i])
   const prevOffset = findPrev(offsets)
   const prev = nums[0] - prevOffset
 

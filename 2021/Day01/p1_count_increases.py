@@ -6,13 +6,13 @@ increases = 0
 for line in sys.stdin:
     n = int(line.strip())
 
-    if prev == None:
+    if prev is None:
         prev = n
         continue
 
     if n > prev:
         increases += 1
-    
+
     prev = n
 
 print(increases)

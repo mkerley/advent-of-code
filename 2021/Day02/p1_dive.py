@@ -33,6 +33,7 @@ Calculate the horizontal position and depth you would have after following the p
 from __future__ import annotations
 import sys
 
+
 class Movement:
     x: int
     y: int
@@ -55,14 +56,15 @@ class Movement:
             y = -distance
         elif direction == "down":
             y = distance
-        
+
         return Movement(x, y)
-    
+
     def __add__(self, other: Movement) -> Movement:
         return Movement(self.x + other.x, self.y + other.y)
-    
+
     def __str__(self) -> str:
         return f"({self.x}, {self.y})"
+
 
 position = Movement(0, 0)
 for line in sys.stdin:

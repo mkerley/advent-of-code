@@ -19,14 +19,14 @@ for line in sys.stdin:
     total = sum(prev)
     print(f"  prevTotal = {prevTotal}")
     print(f"  total = {total}")
-    if prevTotal == None:
+    if prevTotal is None:
         prevTotal = total
         continue
 
     if total > prevTotal:
         increases += 1
         print(f"  increases = {increases}")
-    
+
     prevTotal = total
     print(f"  prevTotal (new) = {prevTotal}")
 

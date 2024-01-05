@@ -31,47 +31,51 @@ Use the binary numbers in your diagnostic report to calculate the gamma rate and
 """
 
 from __future__ import annotations
+
 import sys
+
 
 def bit_counts(input: list[str], pos: int) -> dict[str, int]:
     print(f"bit_counts(<{len(input)} inputs>, pos: {pos})")
     counts: dict[str, int] = {}
-    
+
     for bits in input:
         bit = bits[pos]
         if bit not in counts:
             counts[bit] = 1
         else:
             counts[bit] += 1
-    
+
     return counts
+
 
 def most_common_key(counts: dict[str, int]) -> str:
     max_count = 0
     max_key = None
 
-    for (key, count) in counts.items():
+    for key, count in counts.items():
         if count > max_count:
             max_count = count
             max_key = key
-    
-    if max_key == None:
+
+    if max_key is None:
         raise Exception("No keys")
-    
+
     return max_key
+
 
 def least_common_key(counts: dict[str, int]) -> str:
     min_count = None
     min_key = None
 
-    for (key, count) in counts.items():
-        if min_count == None or count < min_count:
+    for key, count in counts.items():
+        if min_count is None or count < min_count:
             min_count = count
             min_key = key
-    
-    if min_key == None:
+
+    if min_key is None:
         raise Exception("No keys")
-    
+
     return min_key
 
 
@@ -79,20 +83,25 @@ def int_from_bits(bits: list[int]) -> int:
     sum = 0
     for i in range(len(bits)):
         if bits[-(i + 1)] != 0:
-            sum += 2 ** i
-    
+            sum += 2**i
+
     return sum
+
 
 def main():
     input: list[str] = []
 
     for line in sys.stdin:
         input.append(line.strip())
-    
+
     bit_count = len(input[0])
-    most_common_bits: list[int] = [int(most_common_key(bit_counts(input, pos))) for pos in range(bit_count)]
+    most_common_bits: list[int] = [
+        int(most_common_key(bit_counts(input, pos))) for pos in range(bit_count)
+    ]
     print(f"most_common_bits = {most_common_bits}")
-    least_common_bits: list[int] = [int(least_common_key(bit_counts(input, pos))) for pos in range(bit_count)]
+    least_common_bits: list[int] = [
+        int(least_common_key(bit_counts(input, pos))) for pos in range(bit_count)
+    ]
     print(f"least_common_bits = {least_common_bits}")
 
     gamma = int_from_bits(most_common_bits)
@@ -101,6 +110,7 @@ def main():
     print(f"gamma:   {gamma}")
     print(f"epsilon: {epsilon}")
     print(f"result:  {gamma * epsilon}")
+
 
 if __name__ == "__main__":
     main()
