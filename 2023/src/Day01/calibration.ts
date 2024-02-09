@@ -1,15 +1,25 @@
 import { eachLine } from '../utils'
 
+const digitWords = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+]
+
 async function v1(file: string) {
   let total = 0
 
   await eachLine(file, (line) => {
-    const digits = line.split('').filter((c) => c >= '0' && c <= '9')
-    const firstDigit = digits[0]
-    const lastDigit = digits[digits.length - 1]
+    const firstDigit = findFirstDigit(line)
+    const lastDigit = findLastDigit(line)
     const num = parseInt(`${firstDigit}${lastDigit}`, 10)
-
-    // console.log(`${line} -> ${num}`)
 
     total += num
   })
@@ -17,81 +27,55 @@ async function v1(file: string) {
   console.log(`v1: ${total}`)
 }
 
-async function v2(file: string) {
-  let total = 0
-  let lineCount = 0
-
-  await eachLine(file, (line) => {
-    const firstDigit = findFirstDigit(line)
-    const lastDigit = findLastDigit(line)
-    const num = parseInt(`${firstDigit}${lastDigit}`, 10)
-
-    console.log(`${line} -> ${num}`)
-
-    total += num
-    lineCount += 1
-  })
-
-  console.log(`v2: ${total} (${lineCount} lines)`)
-}
-
-function minIndex(...indices: number[]): number {
-  return Math.min(...indices.filter((i) => i >= 0))
-}
-
 function findFirstDigit(str: string): number {
-  // console.log(`findFirstDigit(${str})`)
-  const strIndices = [
-    minIndex(str.indexOf('0'), str.indexOf('zero')),
-    minIndex(str.indexOf('1'), str.indexOf('one')),
-    minIndex(str.indexOf('2'), str.indexOf('two')),
-    minIndex(str.indexOf('3'), str.indexOf('three')),
-    minIndex(str.indexOf('4'), str.indexOf('four')),
-    minIndex(str.indexOf('5'), str.indexOf('five')),
-    minIndex(str.indexOf('6'), str.indexOf('six')),
-    minIndex(str.indexOf('7'), str.indexOf('seven')),
-    minIndex(str.indexOf('8'), str.indexOf('eight')),
-    minIndex(str.indexOf('9'), str.indexOf('nine')),
-  ]
-
-  // console.log(`  strIndices = ${strIndices}`)
-
-  const lowestStrIndex = Math.min(...strIndices)
-  // console.log(`  lowestStrIndex = ${lowestStrIndex}`)
-
-  const lowestDigit = strIndices.indexOf(lowestStrIndex)
-  // console.log(`  lowestDigit = ${lowestDigit}`)
-
-  return lowestDigit
+  const re = /[0-9]/
+  return parseInt(str.match(re)![0])
 }
 
 function findLastDigit(str: string): number {
-  // console.log(`findLastDigit(${str})`)
+  const re = /.*([0-9])/
+  return parseInt(str.match(re)![1])
+}
 
-  const strIndices = [
-    Math.max(str.lastIndexOf('0'), str.lastIndexOf('zero')),
-    Math.max(str.lastIndexOf('1'), str.lastIndexOf('one')),
-    Math.max(str.lastIndexOf('2'), str.lastIndexOf('two')),
-    Math.max(str.lastIndexOf('3'), str.lastIndexOf('three')),
-    Math.max(str.lastIndexOf('4'), str.lastIndexOf('four')),
-    Math.max(str.lastIndexOf('5'), str.lastIndexOf('five')),
-    Math.max(str.lastIndexOf('6'), str.lastIndexOf('six')),
-    Math.max(str.lastIndexOf('7'), str.lastIndexOf('seven')),
-    Math.max(str.lastIndexOf('8'), str.lastIndexOf('eight')),
-    Math.max(str.lastIndexOf('9'), str.lastIndexOf('nine')),
-  ]
+async function v2(file: string) {
+  let total = 0
 
-  // console.log(`  strIndices = ${strIndices}`)
+  await eachLine(file, (line) => {
+    const firstDigit = findFirstDigitOrWord(line)
+    const lastDigit = findLastDigitOrWord(line)
+    const num = parseInt(`${firstDigit}${lastDigit}`, 10)
 
-  const lowestStrIndex = Math.max(...strIndices)
-  return strIndices.indexOf(lowestStrIndex)
+    total += num
+  })
+
+  console.log(`v2: ${total}`)
+}
+
+function findFirstDigitOrWord(str: string): number {
+  // [0-9]|zero|one|two|...
+  const pattern = ['[0-9]', ...digitWords].join('|')
+  const re = new RegExp(pattern)
+  return parseDigit(str.match(re)![0])
+}
+
+function findLastDigitOrWord(str: string): number {
+  // .*([0-9]|zero|one|two|...)
+  const pattern = '.*(' + ['[0-9]', ...digitWords].join('|') + ')'
+  const re = new RegExp(pattern)
+  return parseDigit(str.match(re)![1])
+}
+
+function parseDigit(digit: string) {
+  const num = parseInt(digit)
+  if (isNaN(num)) {
+    return digitWords.indexOf(digit)
+  }
+  return num
 }
 
 async function main() {
   const file =
-    process.argv.filter((arg) => !arg.includes('ts-node'))[1] ?? 'input.txt'
-  console.log(`argv: ${process.argv}`)
-  console.log(`file: ${file}`)
+    process.argv.filter((arg) => !arg.includes('node'))[1] ?? 'input.txt'
   await v1(file)
   await v2(file)
 }
