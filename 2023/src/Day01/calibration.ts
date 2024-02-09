@@ -27,14 +27,14 @@ async function part1(file: string) {
   console.log(`part1: ${total}`)
 }
 
+const firstDigitRegex = /[0-9]/
 function findFirstDigit(str: string): number {
-  const re = /[0-9]/
-  return parseInt(str.match(re)![0])
+  return parseInt(str.match(firstDigitRegex)![0])
 }
 
+const lastDigitRegex = /.*([0-9])/
 function findLastDigit(str: string): number {
-  const re = /.*([0-9])/
-  return parseInt(str.match(re)![1])
+  return parseInt(str.match(lastDigitRegex)![1])
 }
 
 async function part2(file: string) {
@@ -51,18 +51,18 @@ async function part2(file: string) {
   console.log(`part2: ${total}`)
 }
 
+// [0-9]|zero|one|two|...
+const firstDigitOrWordRegex = new RegExp(['[0-9]', ...digitWords].join('|'))
 function findFirstDigitOrWord(str: string): number {
-  // [0-9]|zero|one|two|...
-  const pattern = ['[0-9]', ...digitWords].join('|')
-  const re = new RegExp(pattern)
-  return parseDigit(str.match(re)![0])
+  return parseDigit(str.match(firstDigitOrWordRegex)![0])
 }
 
+// .*([0-9]|zero|one|two|...)
+const lastDigitOrWordRegex = new RegExp(
+  '.*(' + ['[0-9]', ...digitWords].join('|') + ')'
+)
 function findLastDigitOrWord(str: string): number {
-  // .*([0-9]|zero|one|two|...)
-  const pattern = '.*(' + ['[0-9]', ...digitWords].join('|') + ')'
-  const re = new RegExp(pattern)
-  return parseDigit(str.match(re)![1])
+  return parseDigit(str.match(lastDigitOrWordRegex)![1])
 }
 
 function parseDigit(digit: string) {
