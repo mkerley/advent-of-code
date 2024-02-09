@@ -13,7 +13,7 @@ const digitWords = [
   'nine',
 ]
 
-async function v1(file: string) {
+async function part1(file: string) {
   let total = 0
 
   await eachLine(file, (line) => {
@@ -24,7 +24,7 @@ async function v1(file: string) {
     total += num
   })
 
-  console.log(`v1: ${total}`)
+  console.log(`part1: ${total}`)
 }
 
 function findFirstDigit(str: string): number {
@@ -37,7 +37,7 @@ function findLastDigit(str: string): number {
   return parseInt(str.match(re)![1])
 }
 
-async function v2(file: string) {
+async function part2(file: string) {
   let total = 0
 
   await eachLine(file, (line) => {
@@ -48,7 +48,7 @@ async function v2(file: string) {
     total += num
   })
 
-  console.log(`v2: ${total}`)
+  console.log(`part2: ${total}`)
 }
 
 function findFirstDigitOrWord(str: string): number {
@@ -76,8 +76,8 @@ function parseDigit(digit: string) {
 async function main() {
   const file =
     process.argv.filter((arg) => !arg.includes('node'))[1] ?? 'input.txt'
-  await v1(file)
-  await v2(file)
+  await part1(file)
+  await part2(file)
 }
 
 main()
