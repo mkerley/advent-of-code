@@ -1,18 +1,5 @@
 import { eachLine } from '../utils'
 
-const digitWords = [
-  'zero',
-  'one',
-  'two',
-  'three',
-  'four',
-  'five',
-  'six',
-  'seven',
-  'eight',
-  'nine',
-]
-
 async function part1(file: string) {
   let total = 0
 
@@ -50,6 +37,19 @@ async function part2(file: string) {
 
   console.log(`part2: ${total}`)
 }
+
+const digitWords = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+]
 
 // [0-9]|zero|one|two|...
 const firstDigitOrWordRegex = new RegExp(['[0-9]', ...digitWords].join('|'))
