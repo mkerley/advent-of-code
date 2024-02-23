@@ -1,12 +1,12 @@
 import { readLines } from '../utils'
 
-async function v1(file: string) {
+async function part1(file: string) {
   const input = await readLines(file)
   console.log(input)
   return 0
 }
 
-async function v2(file: string) {
+async function part2(file: string) {
   const input = await readLines(file)
   console.log(input)
   return 0
@@ -15,8 +15,8 @@ async function v2(file: string) {
 async function main() {
   const file =
     process.argv.filter((arg) => !arg.includes('ts-node'))[1] ?? 'input.txt'
-  console.log('v1:', await v1(file))
-  console.log('v2:', await v2(file))
+  console.log('part1:', await part1(file))
+  console.log('part2:', await part2(file))
 }
 
 main()

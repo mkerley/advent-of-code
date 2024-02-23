@@ -3,23 +3,23 @@ import { eachLine } from '../utils'
 type Game = { id: number; sets: GameSet[] }
 type GameSet = Record<string, number>
 
-async function v1(file: string) {
-  console.log(`v1(${file})`)
+async function part1(file: string) {
+  // console.log(`part1(${file})`)
 
   let sumOfPossibleIds = 0
   await eachLine(file, async (line) => {
     const game = parseGame(line)
-    const possible = isPossible(game)
+    // const possible = isPossible(game)
 
-    console.log(
-      `${JSON.stringify(game)} -> ${possible ? 'POSSIBLE' : 'IMPOSSIBLE'}`
-    )
+    // console.log(
+    //   `${JSON.stringify(game)} -> ${possible ? 'POSSIBLE' : 'IMPOSSIBLE'}`
+    // )
     if (isPossible(game)) {
       sumOfPossibleIds += game.id
     }
   })
 
-  console.log(`Sum of possible IDs: ${sumOfPossibleIds}`)
+  return sumOfPossibleIds
 }
 
 function parseGame(line: string): Game {
@@ -60,8 +60,8 @@ function isPossible(game: Game) {
   return true
 }
 
-async function v2(file: string) {
-  console.log(`v2(${file})`)
+async function part2(file: string) {
+  // console.log(`part2(${file})`)
 
   let sumOfPowers = 0
   await eachLine(file, async (line) => {
@@ -69,12 +69,12 @@ async function v2(file: string) {
     const mins = minPossible(game)
     const power = mins.red * mins.green * mins.blue
 
-    console.log(JSON.stringify(game))
-    console.log(`  ${JSON.stringify(mins)} -> ${power}`)
+    //console.log(JSON.stringify(game))
+    //console.log(`  ${JSON.stringify(mins)} -> ${power}`)
     sumOfPowers += power
   })
 
-  console.log(`Sum of powers: ${sumOfPowers}`)
+  return sumOfPowers
 }
 
 function minPossible(game: Game) {
@@ -93,8 +93,8 @@ function minPossible(game: Game) {
 async function main() {
   const file =
     process.argv.filter((arg) => !arg.includes('ts-node'))[1] ?? 'input.txt'
-  await v1(file)
-  await v2(file)
+  console.log('part1:', await part1(file))
+  console.log('part2:', await part2(file))
 }
 
 main()
